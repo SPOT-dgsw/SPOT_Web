@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/auth/:path*", "destination": "https://api-spot.dgsw.site/auth/:path*" },
-    { "source": "/api/:path*", "destination": "https://api-spot.dgsw.site/api/:path*" }
+    { "source": "/auth/:path*", "destination": "https://api-spot.dgsw.kr/auth/:path*" },
+    { "source": "/api/:path*", "destination": "https://api-spot.dgsw.kr/api/:path*" }
   ]
 }

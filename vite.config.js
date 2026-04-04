@@ -3,17 +3,11 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-const swBuildTag = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14)
-
 export default defineConfig({
-  define: {
-    __SW_CACHE_VERSION__: JSON.stringify(swBuildTag),
-  },
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
-      filename: `sw-${swBuildTag}.js`,
       injectRegister: null,
       registerType: 'autoUpdate',
       includeAssets: ['spot-logo.svg'],
@@ -53,8 +47,8 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        navigateFallbackDenylist: [/^\/api\//, /^\/auth\//],
+        globPatterns: ['**/*.{js,css,ico,png,svg}'],
+        navigateFallback: null,
         runtimeCaching: [
           {
             // 공개 읽기 전용 엔드포인트만 캐싱

@@ -1,12 +1,4 @@
 {
-  "headers": [
-    {
-      "source": "/sw.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-      ]
-    }
-  ],
   "rewrites": [
     { "source": "/auth/:path*", "destination": "https://api-spot.dgsw.kr/auth/:path*" },
     { "source": "/api/:path*", "destination": "https://api-spot.dgsw.kr/api/:path*" },

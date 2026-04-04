@@ -148,11 +148,11 @@ export default function Home() {
       <div
         className="flex items-center gap-2.5 px-4 py-3 rounded-xl border"
         style={{
-          background: 'var(--dds-color-status-warning-soft)',
-          borderColor: 'var(--dds-color-status-warning-border)',
+          background: 'var(--dds-color-status-error-soft)',
+          borderColor: 'var(--dds-color-status-error-border)',
         }}
       >
-        <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--dds-color-status-warning)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--dds-color-status-error)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p className="text-sm" style={{ color: 'var(--dds-color-text-primary)' }}>

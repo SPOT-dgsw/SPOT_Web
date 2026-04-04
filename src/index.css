@@ -41,8 +41,8 @@
 }
 
 .dark {
-  --dds-color-brand-primary: #4da6f5;
-  --dds-color-brand-secondary: #4da6f5a6;
+  --dds-color-brand-primary: #0283F0;
+  --dds-color-brand-secondary: #0283F0a6;
   --dds-color-text-primary: #F5F5F5;
   --dds-color-text-secondary: #a5b6c9;
   --dds-color-text-tertiary: #7e8fa2;
@@ -62,7 +62,7 @@
   --dds-color-status-success: #4bc191;
   --dds-color-status-success-soft: #244135;
   --dds-color-status-success-border: #3e6957;
-  --dds-color-status-error: #f07f78;
+  --dds-color-status-error: #FF4242;
   --dds-color-status-error-soft: #4a2e2d;
   --dds-color-status-error-border: #6c4240;
   --dds-color-status-warning: #e3a15f;
@@ -73,7 +73,7 @@
   --dds-color-status-info-border: #3d638f;
   --dds-color-static-white: #FFFFFF;
   --dds-color-static-black: #121212;
-  --dds-color-focus-ring: #4da6f54d;
+  --dds-color-focus-ring: #0283F04d;
   --dds-color-tabbar-bg: #393A3B;
   --dds-color-tabbar-active: #8C8D8F;
   --dds-color-neutral-btn: #5f6f82;

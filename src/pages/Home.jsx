@@ -184,7 +184,7 @@ export default function Home() {
           <div className="space-y-5">
             {Object.entries(grouped).map(([date, songs]) => (
               <div key={date}>
-                <h3 className="text-xs sm:text-sm font-semibold mb-2" style={{ color: 'var(--cu-muted)' }}>
+                <h3 className="text-xs sm:text-sm font-semibold mb-2" style={{ color: 'var(--dds-color-text-secondary)' }}>
                   {date}
                 </h3>
                 <div className="space-y-3">

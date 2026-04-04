@@ -49,7 +49,7 @@ export default function Navbar() {
           </button>
           {user ? (
             <div className="flex items-center gap-1.5 sm:gap-2.5">
-              <span className="text-sm hidden sm:inline" style={{ color: 'var(--cu-muted)' }}>
+              <span className="text-sm hidden sm:inline" style={{ color: 'var(--dds-color-text-secondary)' }}>
                 {user.name}
               </span>
               <button onClick={logout} className="cu-btn cu-btn-danger">

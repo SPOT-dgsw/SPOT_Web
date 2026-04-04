@@ -175,7 +175,7 @@ function WakeupQueue() {
             ))}
           </div>
         )}
-        <p className="text-xs mt-3" style={{ color: 'var(--cu-muted)' }}>
+        <p className="text-xs mt-3" style={{ color: 'var(--dds-color-text-secondary)' }}>
           매일 오전 8시에 상위 2곡이 자동 승인됩니다.
         </p>
       </div>
@@ -471,7 +471,7 @@ function UserManagement() {
               {users.map(u => (
                 <tr key={u.id}>
                   <td>{u.name}</td>
-                  <td style={{ color: 'var(--cu-muted)' }}>{u.email}</td>
+                  <td style={{ color: 'var(--dds-color-text-secondary)' }}>{u.email}</td>
                   <td>
                     <select
                       value={u.role}
@@ -606,34 +606,34 @@ function AuditLogs() {
             <tbody>
               {logs.map((log) => (
                 <tr key={log.id}>
-                  <td className="text-xs whitespace-nowrap" style={{ color: 'var(--cu-muted)' }}>
+                  <td className="text-xs whitespace-nowrap" style={{ color: 'var(--dds-color-text-secondary)' }}>
                     {new Date(log.created_at).toLocaleString('ko-KR')}
                   </td>
                   <td>
                     <div className="font-medium">{log.user_name || '-'}</div>
-                    <div className="text-xs" style={{ color: 'var(--cu-muted)' }}>{log.user_email || '-'}</div>
+                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.user_email || '-'}</div>
                   </td>
                   <td>{log.user_role || '-'}</td>
                   <td>
                     <span className="cu-badge cu-badge-muted mr-2">
                       {log.method}
                     </span>
-                    <span className="text-xs" style={{ color: 'var(--cu-muted)' }}>{log.path}</span>
+                    <span className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.path}</span>
                   </td>
                   <td>
                     <div>{log.status_code}</div>
-                    <div className="text-xs" style={{ color: 'var(--cu-muted)' }}>{log.duration_ms ?? '-'}ms</div>
+                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.duration_ms ?? '-'}ms</div>
                   </td>
                   <td>
                     <details className="text-xs">
-                      <summary className="cursor-pointer" style={{ color: 'var(--cu-accent)' }}>보기</summary>
+                      <summary className="cursor-pointer" style={{ color: 'var(--dds-color-brand-primary)' }}>보기</summary>
                       <div className="mt-2 space-y-2">
                         <div>
-                          <div className="mb-1" style={{ color: 'var(--cu-muted)' }}>query</div>
+                          <div className="mb-1" style={{ color: 'var(--dds-color-text-secondary)' }}>query</div>
                           <pre className="p-2 rounded whitespace-pre-wrap break-all cu-subcard">{formatJsonText(log.request_query)}</pre>
                         </div>
                         <div>
-                          <div className="mb-1" style={{ color: 'var(--cu-muted)' }}>body</div>
+                          <div className="mb-1" style={{ color: 'var(--dds-color-text-secondary)' }}>body</div>
                           <pre className="p-2 rounded whitespace-pre-wrap break-all cu-subcard">{formatJsonText(log.request_body)}</pre>
                         </div>
                       </div>
@@ -647,7 +647,7 @@ function AuditLogs() {
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4">
-        <p className="text-xs" style={{ color: 'var(--cu-muted)' }}>총 {pagination.total}건</p>
+        <p className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>총 {pagination.total}건</p>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
@@ -656,7 +656,7 @@ function AuditLogs() {
           >
             이전
           </button>
-          <span className="text-xs" style={{ color: 'var(--cu-muted)' }}>
+          <span className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>
             {pagination.page} / {pagination.totalPages}
           </span>
           <button
@@ -697,7 +697,7 @@ function YoutubeSettings() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p className="text-sm font-medium">방송부 YouTube 계정</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--cu-muted)' }}>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--dds-color-text-secondary)' }}>
               {connected ? '연결됨 — 재생목록을 생성할 수 있습니다.' : '연결되지 않음 — 연결 후 재생목록 내보내기를 사용할 수 있습니다.'}
             </p>
           </div>

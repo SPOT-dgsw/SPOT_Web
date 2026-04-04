@@ -8,24 +8,24 @@ export default function Toast({ message, type = 'info', onClose }) {
 
   const styles = {
     success: {
-      background: 'var(--cu-success-soft)',
-      color: 'var(--cu-success)',
-      borderColor: 'color-mix(in srgb, var(--cu-success) 30%, var(--cu-line))',
+      background: 'var(--dds-color-status-success-soft)',
+      color: 'var(--dds-color-status-success)',
+      borderColor: 'color-mix(in srgb, var(--dds-color-status-success) 30%, var(--dds-color-border-normal))',
     },
     error: {
-      background: 'var(--cu-danger-soft)',
-      color: 'var(--cu-danger)',
-      borderColor: 'color-mix(in srgb, var(--cu-danger) 30%, var(--cu-line))',
+      background: 'var(--dds-color-status-error-soft)',
+      color: 'var(--dds-color-status-error)',
+      borderColor: 'color-mix(in srgb, var(--dds-color-status-error) 30%, var(--dds-color-border-normal))',
     },
     info: {
-      background: 'var(--cu-accent-soft)',
-      color: 'var(--cu-accent)',
-      borderColor: 'color-mix(in srgb, var(--cu-accent) 30%, var(--cu-line))',
+      background: 'var(--dds-color-status-info-soft)',
+      color: 'var(--dds-color-status-info)',
+      borderColor: 'color-mix(in srgb, var(--dds-color-status-info) 30%, var(--dds-color-border-normal))',
     },
     warning: {
-      background: 'var(--cu-warning-soft)',
-      color: 'var(--cu-warning)',
-      borderColor: 'color-mix(in srgb, var(--cu-warning) 30%, var(--cu-line))',
+      background: 'var(--dds-color-status-warning-soft)',
+      color: 'var(--dds-color-status-warning)',
+      borderColor: 'color-mix(in srgb, var(--dds-color-status-warning) 30%, var(--dds-color-border-normal))',
     },
   };
 

@@ -189,17 +189,17 @@ export default function Apply() {
         <div
           className="p-4 sm:p-6 rounded-xl border"
           style={{
-            borderColor: 'color-mix(in srgb, var(--cu-danger) 35%, var(--cu-line))',
-            background: 'var(--cu-danger-soft)',
+            borderColor: 'color-mix(in srgb, var(--dds-color-status-error) 35%, var(--dds-color-border-normal))',
+            background: 'var(--dds-color-status-error-soft)',
           }}
         >
           <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: 'var(--cu-danger)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: 'var(--dds-color-status-error)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div>
-              <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--cu-danger)' }}>신청이 거부되었습니다</h3>
-              <p className="text-sm" style={{ color: 'var(--cu-danger)' }}>
+              <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--dds-color-status-error)' }}>신청이 거부되었습니다</h3>
+              <p className="text-sm" style={{ color: 'var(--dds-color-status-error)' }}>
                 계정이 차단되어 노래 신청을 할 수 없습니다. 관리자에게 문의하세요.
               </p>
             </div>
@@ -236,7 +236,7 @@ export default function Apply() {
                 required
                 className="cu-input"
               />
-              {error && <p className="text-xs mt-1.5" style={{ color: 'var(--cu-danger)' }}>{error}</p>}
+              {error && <p className="text-xs mt-1.5" style={{ color: 'var(--dds-color-status-error)' }}>{error}</p>}
               {searching && (
                 <div className="absolute right-3 top-9 text-xs cu-empty">
                   검색 중...
@@ -247,7 +247,7 @@ export default function Apply() {
             {/* 검색 결과 */}
             {searchResults.length > 0 && (
               <div className="space-y-2 max-h-96 overflow-y-auto cu-subcard p-2">
-                <p className="text-xs px-2 py-1" style={{ color: 'var(--cu-muted)' }}>검색 결과</p>
+                <p className="text-xs px-2 py-1" style={{ color: 'var(--dds-color-text-secondary)' }}>검색 결과</p>
                 {searchResults.map((song) => (
                   <button
                     key={song.video_id}
@@ -255,21 +255,21 @@ export default function Apply() {
                     onClick={() => handleSelectSong(song)}
                     className="w-full flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border transition-colors text-left"
                     style={{
-                      borderColor: 'var(--cu-line)',
-                      background: 'color-mix(in srgb, var(--cu-panel) 95%, transparent)',
+                      borderColor: 'var(--dds-color-border-normal)',
+                      background: 'color-mix(in srgb, var(--dds-color-background-surface) 95%, transparent)',
                     }}
                   >
                     <img
                       src={song.thumbnail}
                       alt={song.title}
                       className="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded border"
-                      style={{ borderColor: 'var(--cu-line)' }}
+                      style={{ borderColor: 'var(--dds-color-border-normal)' }}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{song.title}</p>
-                      <p className="text-xs truncate" style={{ color: 'var(--cu-muted)' }}>{song.channel_name}</p>
+                      <p className="text-xs truncate" style={{ color: 'var(--dds-color-text-secondary)' }}>{song.channel_name}</p>
                     </div>
-                    <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--cu-muted)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--dds-color-text-secondary)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
@@ -286,9 +286,9 @@ export default function Apply() {
             </button>
           </form>
 
-          <div className="p-4 rounded-lg" style={{ background: 'var(--cu-panel-soft)' }}>
+          <div className="p-4 rounded-lg" style={{ background: 'var(--dds-color-fill-primary)' }}>
             <h3 className="text-sm font-medium mb-2">안내사항</h3>
-            <ul className="text-xs space-y-1" style={{ color: 'var(--cu-muted)' }}>
+            <ul className="text-xs space-y-1" style={{ color: 'var(--dds-color-text-secondary)' }}>
               <li>• {tab === 'wakeup' ? applyNotice.wakeupPrimary : applyNotice.radioPrimary}</li>
               <li>• {applyNotice.common}</li>
             </ul>

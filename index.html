@@ -16,6 +16,26 @@
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
 
     <title>SPOT</title>
+    <script>
+      // SW 캐시 강제 정리 — 버전이 바뀌면 구 SW/캐시를 제거 후 새로고침
+      (function(){
+        var V='spot_sw_v4';
+        if(localStorage.getItem(V))return;
+        if(!('serviceWorker' in navigator))return;
+        navigator.serviceWorker.getRegistrations().then(function(regs){
+          var p=regs.map(function(r){return r.unregister()});
+          if('caches' in window){
+            caches.keys().then(function(ks){
+              ks.forEach(function(k){caches.delete(k)});
+            });
+          }
+          Promise.all(p).then(function(){
+            localStorage.setItem(V,'1');
+            if(regs.length>0)location.reload();
+          });
+        });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

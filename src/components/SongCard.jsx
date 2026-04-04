@@ -21,7 +21,7 @@ export default function SongCard({ song, showUser, actions, showDate = true }) {
           <p className="text-xs mt-1" style={{ color: 'var(--dds-color-text-secondary)' }}>{song.user.name}</p>
         )}
         {showDate && song.play_date && (
-          <p className="text-xs mt-1" style={{ color: 'var(--dds-color-brand-primary)' }}>
+          <p className="text-xs mt-1" style={{ color: 'var(--dds-color-text-secondary)' }}>
             {new Date(song.play_date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
           </p>
         )}

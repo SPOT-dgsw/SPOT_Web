@@ -7,59 +7,61 @@ import { ThemeProvider } from './context/ThemeContext'
 import './index.css'
 import App from './App.jsx'
 
-const SW_RECOVERY_KEY = 'spot_sw_recovery_v2'
+const SW_VERSION_KEY = 'spot_sw_version'
+const SW_VERSION = __SW_CACHE_VERSION__
 
-async function recoverServiceWorkerOnce(errorLike) {
-  const message = String(errorLike?.message || errorLike || '')
-  const isBadPrecache = message.includes('bad-precaching-response')
-  const alreadyRecovered = sessionStorage.getItem(SW_RECOVERY_KEY) === '1'
-
-  if (!isBadPrecache || alreadyRecovered) {
-    return
-  }
-
-  sessionStorage.setItem(SW_RECOVERY_KEY, '1')
+async function purgeIfVersionChanged() {
+  const stored = localStorage.getItem(SW_VERSION_KEY)
+  if (stored === SW_VERSION) return false
 
   try {
     const registrations = await navigator.serviceWorker.getRegistrations()
-    await Promise.all(registrations.map((registration) => registration.unregister()))
+    await Promise.all(registrations.map((r) => r.unregister()))
 
     if ('caches' in window) {
-      const cacheKeys = await caches.keys()
-      await Promise.all(cacheKeys.map((key) => caches.delete(key)))
+      const keys = await caches.keys()
+      await Promise.all(keys.map((k) => caches.delete(k)))
     }
-  } catch (recoveryError) {
-    console.error('[PWA] Service worker recovery failed:', recoveryError)
-  } finally {
-    window.location.reload()
+
+    localStorage.setItem(SW_VERSION_KEY, SW_VERSION)
+    return registrations.length > 0
+  } catch (e) {
+    console.error('[PWA] purge failed:', e)
+    localStorage.setItem(SW_VERSION_KEY, SW_VERSION)
+    return false
   }
 }
 
-if ('serviceWorker' in navigator) {
-  const updateSW = registerSW({
-    immediate: true,
-    onNeedRefresh: () => {
-      updateSW(true)
-    },
-    onRegisterError: async (error) => {
-      console.error('[PWA] Service worker registration failed:', error)
-      await recoverServiceWorkerOnce(error)
-    },
-  })
+async function bootstrap() {
+  if ('serviceWorker' in navigator) {
+    const hadOldSW = await purgeIfVersionChanged()
+    if (hadOldSW) {
+      window.location.reload()
+      return
+    }
 
-  window.addEventListener('unhandledrejection', (event) => {
-    recoverServiceWorkerOnce(event.reason)
-  })
+    const updateSW = registerSW({
+      immediate: true,
+      onNeedRefresh: () => {
+        updateSW(true)
+      },
+      onRegisterError: (error) => {
+        console.error('[PWA] Service worker registration failed:', error)
+      },
+    })
+  }
+
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </StrictMode>,
+  )
 }
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
-  </StrictMode>,
-)
+bootstrap()

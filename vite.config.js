@@ -6,6 +6,9 @@ import { VitePWA } from 'vite-plugin-pwa'
 const swBuildTag = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14)
 
 export default defineConfig({
+  define: {
+    __SW_CACHE_VERSION__: JSON.stringify(swBuildTag),
+  },
   plugins: [
     react(),
     tailwindcss(),

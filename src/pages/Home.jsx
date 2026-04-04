@@ -156,7 +156,7 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p className="text-sm" style={{ color: 'var(--dds-color-text-primary)' }}>
-          4/5~4/10 DDS 및 DAuth 전환으로 인해 서비스 작동이 원활하지 않을 수 있습니다.
+          4/5~4/10 DAuth 전환 및 도메인 변경으로 인해 서비스 작동이 원활하지 않을 수 있습니다.
         </p>
       </div>
 

@@ -2,8 +2,8 @@
 @import "tailwindcss";
 
 :root {
-  --dds-color-brand-primary: #0083F0;
-  --dds-color-brand-secondary: #0083f0a6;
+  --dds-color-brand-primary: #8445F1;
+  --dds-color-brand-secondary: #8445F1a6;
   --dds-color-text-primary: #0F0F10;
   --dds-color-text-secondary: #5d6d7f;
   --dds-color-text-tertiary: #8a95a3;
@@ -29,20 +29,20 @@
   --dds-color-status-warning: #FFC800;
   --dds-color-status-warning-soft: #fff6d6;
   --dds-color-status-warning-border: #ffe07a;
-  --dds-color-status-info: #0083F0;
+  --dds-color-status-info: #8445F1;
   --dds-color-status-info-soft: #dbe9ff;
   --dds-color-status-info-border: #a7c7f5;
   --dds-color-static-white: #FFFFFF;
   --dds-color-static-black: #121212;
-  --dds-color-focus-ring: #0083f04d;
+  --dds-color-focus-ring: #8445F14d;
   --dds-color-tabbar-bg: #E6E6E7;
   --dds-color-tabbar-active: #FFFFFF;
   --dds-color-neutral-btn: #5f6f82;
 }
 
 .dark {
-  --dds-color-brand-primary: #0283F0;
-  --dds-color-brand-secondary: #0283F0a6;
+  --dds-color-brand-primary: #8445F1;
+  --dds-color-brand-secondary: #8445F1a6;
   --dds-color-text-primary: #F5F5F5;
   --dds-color-text-secondary: #a5b6c9;
   --dds-color-text-tertiary: #7e8fa2;
@@ -73,7 +73,7 @@
   --dds-color-status-info-border: #3d638f;
   --dds-color-static-white: #FFFFFF;
   --dds-color-static-black: #121212;
-  --dds-color-focus-ring: #0283F04d;
+  --dds-color-focus-ring: #8445F14d;
   --dds-color-tabbar-bg: #393A3B;
   --dds-color-tabbar-active: #8C8D8F;
   --dds-color-neutral-btn: #5f6f82;

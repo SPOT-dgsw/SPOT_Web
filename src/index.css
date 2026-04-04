@@ -237,8 +237,8 @@ select {
 
   .cu-btn-success {
     color: var(--dds-color-static-white);
-    border-color: var(--dds-color-status-success);
-    background: var(--dds-color-status-success);
+    border-color: #8445F1;
+    background: #8445F1;
   }
 
   .cu-btn-danger {

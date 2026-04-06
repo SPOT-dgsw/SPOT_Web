@@ -60,7 +60,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <a href={`${import.meta.env.VITE_API_URL || ''}/auth/google`} className="cu-btn cu-btn-primary">
+            <a href={`${import.meta.env.VITE_API_URL || ''}/auth/dodam`} className="cu-btn cu-btn-primary">
               로그인
             </a>
           )}

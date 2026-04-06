@@ -22,22 +22,6 @@ const STATUS_BADGE_CLASS = {
   CANCELLED: 'cu-badge-muted',
 };
 
-const FIELD_LABELS = {
-  equipmentName: '장비명',
-  startDate: '대여 시작일',
-  endDate: '대여 종료일',
-  purpose: '사용 목적',
-  eventName: '행사명',
-  eventDate: '행사 일시',
-  location: '장소',
-  equipment: '필요 장비',
-  personnel: '투입 인원',
-  detail: '상세 내용 / 내용',
-  itemName: '항목명',
-  amount: '금액 (원)',
-  vendor: '구매처',
-};
-
 function formatDateTime(value) {
   if (!value) return '-';
   return new Date(value).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
@@ -49,19 +33,57 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 }
 
+function applyInlineMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+}
+
+function renderMarkdown(raw) {
+  // Escape HTML to prevent XSS, then selectively re-add safe tags
+  const escaped = raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  const lines = escaped.split('\n');
+  const html = [];
+  let inList = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('### ')) {
+      if (inList) { html.push('</ul>'); inList = false; }
+      html.push(`<h3 class="md-h3">${applyInlineMarkdown(trimmed.slice(4))}</h3>`);
+    } else if (trimmed.startsWith('## ')) {
+      if (inList) { html.push('</ul>'); inList = false; }
+      html.push(`<h2 class="md-h2">${applyInlineMarkdown(trimmed.slice(3))}</h2>`);
+    } else if (trimmed.startsWith('# ')) {
+      if (inList) { html.push('</ul>'); inList = false; }
+      html.push(`<h1 class="md-h1">${applyInlineMarkdown(trimmed.slice(2))}</h1>`);
+    } else if (trimmed === '---') {
+      if (inList) { html.push('</ul>'); inList = false; }
+      html.push('<hr class="md-hr" />');
+    } else if (trimmed.startsWith('- ')) {
+      if (!inList) { html.push('<ul class="md-ul">'); inList = true; }
+      html.push(`<li>${applyInlineMarkdown(trimmed.slice(2))}</li>`);
+    } else if (trimmed === '') {
+      if (inList) { html.push('</ul>'); inList = false; }
+    } else {
+      if (inList) { html.push('</ul>'); inList = false; }
+      html.push(`<p class="md-p">${applyInlineMarkdown(trimmed)}</p>`);
+    }
+  }
+
+  if (inList) html.push('</ul>');
+  return html.join('');
+}
+
 export default function ApprovalDetail({ approval, onClose }) {
   const { showToast } = useToast();
 
   if (!approval) return null;
-
-  let contentObj = {};
-  try {
-    contentObj = JSON.parse(approval.content);
-  } catch {
-    contentObj = {};
-  }
-
-  const contentEntries = Object.entries(contentObj).filter(([, v]) => v !== '' && v !== null && v !== undefined);
 
   const handleDownload = async (attachmentId, fileName) => {
     const res = await api.get(`/api/approval/attachment/${attachmentId}`, {
@@ -126,20 +148,15 @@ export default function ApprovalDetail({ approval, onClose }) {
             )}
           </div>
 
-          {/* 양식 내용 */}
-          {contentEntries.length > 0 && (
+          {/* 마크다운 내용 */}
+          {approval.content && (
             <div>
               <h4 className="text-sm font-semibold mb-2">결재 내용</h4>
-              <div className="space-y-2">
-                {contentEntries.map(([key, value]) => (
-                  <div key={key} className="text-sm">
-                    <span className="font-medium" style={{ color: 'var(--dds-color-text-secondary)' }}>
-                      {FIELD_LABELS[key] || key}
-                    </span>
-                    <p className="mt-0.5 whitespace-pre-wrap">{String(value)}</p>
-                  </div>
-                ))}
-              </div>
+              <div
+                className="approval-md-body text-sm leading-relaxed p-3 rounded-xl"
+                style={{ background: 'var(--dds-color-bg-alternative)' }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(approval.content) }}
+              />
             </div>
           )}
 

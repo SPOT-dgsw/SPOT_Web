@@ -7,48 +7,72 @@ const TEMPLATES = [
   { value: 'GENERAL', label: '일반 품의' },
 ];
 
-const TEMPLATE_FIELDS = {
-  EQUIPMENT: [
-    { key: 'equipmentName', label: '장비명', type: 'text', required: true, placeholder: '예) 캠코더, 마이크 세트' },
-    { key: 'startDate', label: '대여 시작일', type: 'date', required: true },
-    { key: 'endDate', label: '대여 종료일', type: 'date', required: true },
-    { key: 'purpose', label: '사용 목적', type: 'textarea', required: true, placeholder: '장비 사용 목적을 입력해주세요.' },
-  ],
-  EVENT: [
-    { key: 'eventName', label: '행사명', type: 'text', required: true, placeholder: '예) 2026 학교 축제' },
-    { key: 'eventDate', label: '행사 일시', type: 'datetime-local', required: true },
-    { key: 'location', label: '장소', type: 'text', required: true, placeholder: '예) 본관 강당' },
-    { key: 'equipment', label: '필요 장비', type: 'text', required: false, placeholder: '예) 마이크 2개, 앰프 1대' },
-    { key: 'personnel', label: '투입 인원', type: 'text', required: false, placeholder: '예) 방송부원 3명' },
-    { key: 'detail', label: '상세 내용', type: 'textarea', required: false, placeholder: '추가 요청사항을 입력해주세요.' },
-  ],
-  BUDGET: [
-    { key: 'itemName', label: '항목명', type: 'text', required: true, placeholder: '예) 마이크 구매' },
-    { key: 'amount', label: '금액 (원)', type: 'number', required: true, placeholder: '예) 50000' },
-    { key: 'purpose', label: '사용 목적', type: 'textarea', required: true, placeholder: '예산 사용 목적을 입력해주세요.' },
-    { key: 'vendor', label: '구매처', type: 'text', required: false, placeholder: '예) 쿠팡, 네이버 스토어' },
-  ],
-  GENERAL: [
-    { key: 'detail', label: '내용', type: 'textarea', required: true, placeholder: '요청 내용을 자유롭게 입력해주세요.' },
-  ],
+const MARKDOWN_TEMPLATES = {
+  EQUIPMENT: `# 장비 대여 신청
+
+## 장비 정보
+- **장비명**:
+- **대여 시작일**:
+- **대여 종료일**:
+
+## 사용 목적
+(장비 사용 목적을 입력해주세요)
+
+## 비고
+(추가 사항이 있다면 입력해주세요)
+`,
+  EVENT: `# 행사 지원 요청
+
+## 행사 정보
+- **행사명**:
+- **일시**:
+- **장소**:
+
+## 필요 지원
+- **필요 장비**:
+- **투입 인원**:
+
+## 상세 내용
+(상세 내용을 입력해주세요)
+
+## 비고
+(추가 사항이 있다면 입력해주세요)
+`,
+  BUDGET: `# 예산 사용 신청
+
+## 사용 항목
+- **항목명**:
+- **금액**: 원
+- **구매처**:
+
+## 사용 목적
+(예산 사용 목적을 입력해주세요)
+
+## 비고
+(추가 사항이 있다면 입력해주세요)
+`,
+  GENERAL: `# 일반 품의
+
+## 요청 내용
+(요청 내용을 자유롭게 입력해주세요)
+
+## 비고
+(추가 사항이 있다면 입력해주세요)
+`,
 };
+
+const MAX_CONTENT_LENGTH = 10000;
 
 export default function ApprovalForm({ onSubmit, onCancel, loading }) {
   const [template, setTemplate] = useState('');
   const [title, setTitle] = useState('');
-  const [fields, setFields] = useState({});
+  const [content, setContent] = useState('');
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
 
-  const templateFields = TEMPLATE_FIELDS[template] || [];
-
   const handleTemplateChange = (value) => {
     setTemplate(value);
-    setFields({});
-  };
-
-  const handleFieldChange = (key, value) => {
-    setFields((prev) => ({ ...prev, [key]: value }));
+    setContent(MARKDOWN_TEMPLATES[value] || '');
   };
 
   const handleFileChange = (e) => {
@@ -74,23 +98,17 @@ export default function ApprovalForm({ onSubmit, onCancel, loading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // 필수 항목 검증
-    for (const field of templateFields) {
-      if (field.required && !fields[field.key]?.toString().trim()) {
-        alert(`"${field.label}"을(를) 입력해주세요.`);
-        return;
-      }
+    if (!content.trim()) {
+      alert('내용을 입력해주세요.');
+      return;
     }
-
     const formData = new FormData();
     formData.append('template', template);
     formData.append('title', title.trim());
-    formData.append('content', JSON.stringify(fields));
+    formData.append('content', content);
     for (const file of files) {
       formData.append('attachments', file);
     }
-
     onSubmit(formData);
   };
 
@@ -126,35 +144,41 @@ export default function ApprovalForm({ onSubmit, onCancel, loading }) {
         />
       </div>
 
-      {/* 양식별 동적 필드 */}
-      {template && templateFields.map((field) => (
-        <div key={field.key}>
-          <label className="block text-sm font-medium mb-1">
-            {field.label}
-            {field.required && <span style={{ color: 'var(--dds-color-status-error)' }}> *</span>}
-          </label>
-          {field.type === 'textarea' ? (
-            <textarea
-              value={fields[field.key] || ''}
-              onChange={(e) => handleFieldChange(field.key, e.target.value)}
-              required={field.required}
-              placeholder={field.placeholder}
-              rows={4}
-              className="cu-input resize-y"
-            />
-          ) : (
-            <input
-              type={field.type}
-              value={fields[field.key] || ''}
-              onChange={(e) => handleFieldChange(field.key, e.target.value)}
-              required={field.required}
-              placeholder={field.placeholder}
-              min={field.type === 'number' ? 0 : undefined}
-              className="cu-input"
-            />
-          )}
+      {/* 마크다운 편집기 */}
+      {template && (
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium">
+              내용 <span style={{ color: 'var(--dds-color-status-error)' }}>*</span>
+            </label>
+            <span className="text-xs" style={{ color: content.length > MAX_CONTENT_LENGTH ? 'var(--dds-color-status-error)' : 'var(--dds-color-text-secondary)' }}>
+              {content.length} / {MAX_CONTENT_LENGTH}
+            </span>
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            rows={16}
+            className="cu-input resize-y font-mono text-sm"
+            style={{ minHeight: '300px' }}
+            onKeyDown={(e) => {
+              if (e.key === 'Tab') {
+                e.preventDefault();
+                const { selectionStart, selectionEnd } = e.target;
+                const next = content.slice(0, selectionStart) + '  ' + content.slice(selectionEnd);
+                setContent(next);
+                requestAnimationFrame(() => {
+                  e.target.selectionStart = e.target.selectionEnd = selectionStart + 2;
+                });
+              }
+            }}
+          />
+          <p className="mt-1 text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>
+            마크다운 문법을 사용할 수 있습니다. (# 제목, **굵게**, - 목록)
+          </p>
         </div>
-      ))}
+      )}
 
       {/* 첨부 파일 */}
       {template && (
@@ -200,7 +224,7 @@ export default function ApprovalForm({ onSubmit, onCancel, loading }) {
       <div className="flex flex-col sm:flex-row gap-2 pt-2">
         <button
           type="submit"
-          disabled={!template || !title.trim() || loading}
+          disabled={!template || !title.trim() || !content.trim() || content.length > MAX_CONTENT_LENGTH || loading}
           className="cu-btn cu-btn-primary flex-1 disabled:opacity-50"
         >
           {loading ? '제출 중...' : '결재 제출'}

@@ -46,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     const error = searchParams.get('error');
     if (error === 'auth_failed') {
-      showToast('로그인에 실패했습니다. @dgsw.hs.kr 이메일을 사용해주세요.', 'error');
+      showToast('로그인에 실패했습니다. 도담 계정으로 다시 시도해주세요.', 'error');
       setSearchParams({});
     }
   }, [searchParams, showToast, setSearchParams]);

@@ -28,7 +28,10 @@ export default function Navbar() {
             </>
           )}
           {isAdmin && !isBlocked && (
-            <NavLink to="/admin" className={navClassName}>관리</NavLink>
+            <>
+              <NavLink to="/approvals" className={navClassName}>전자결재</NavLink>
+              <NavLink to="/admin" className={navClassName}>관리</NavLink>
+            </>
           )}
         </div>
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2.5">

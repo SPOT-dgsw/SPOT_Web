@@ -9,6 +9,7 @@ const Apply = lazy(() => import('./pages/Apply'));
 const Admin = lazy(() => import('./pages/Admin'));
 const MyPage = lazy(() => import('./pages/MyPage'));
 const Approvals = lazy(() => import('./pages/Approvals'));
+const ApprovalNew = lazy(() => import('./pages/ApprovalNew'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/apply" element={<ProtectedRoute><Apply /></ProtectedRoute>} />
             <Route path="/my" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
             <Route path="/approvals" element={<AdminRoute><Approvals /></AdminRoute>} />
+            <Route path="/approvals/new" element={<AdminRoute><ApprovalNew /></AdminRoute>} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

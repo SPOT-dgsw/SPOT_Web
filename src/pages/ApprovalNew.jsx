@@ -236,7 +236,7 @@ export default function ApprovalNew() {
             <div className="flex items-center gap-2">
               <span
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm"
-                style={{ background: 'var(--dds-color-bg-assistive)', color: 'var(--dds-color-text-normal)' }}
+                style={{ background: 'var(--dds-color-fill-primary)', color: 'var(--dds-color-text-primary)' }}
               >
                 {approver.name}
                 <span className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>

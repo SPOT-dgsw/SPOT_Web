@@ -102,8 +102,8 @@ export default function MyPage() {
             <span className="text-sm font-medium">{user?.name}</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-            <span className="text-sm sm:w-20" style={{ color: 'var(--dds-color-text-secondary)' }}>이메일</span>
-            <span className="text-sm font-medium break-all">{user?.email}</span>
+            <span className="text-sm sm:w-20" style={{ color: 'var(--dds-color-text-secondary)' }}>도담 ID</span>
+            <span className="text-sm font-medium break-all">{user?.dodam_id}</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <span className="text-sm sm:w-20" style={{ color: 'var(--dds-color-text-secondary)' }}>역할</span>

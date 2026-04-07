@@ -471,7 +471,7 @@ function UserManagement() {
               {users.map(u => (
                 <tr key={u.id}>
                   <td>{u.name}</td>
-                  <td style={{ color: 'var(--dds-color-text-secondary)' }}>{u.email}</td>
+                  <td style={{ color: 'var(--dds-color-text-secondary)' }}>{u.dodam_id}</td>
                   <td>
                     <select
                       value={u.role}

@@ -273,7 +273,7 @@ export default function ApprovalNew() {
                         type="button"
                         onClick={() => selectApprover(m)}
                         className="w-full text-left px-3 py-2 text-sm hover:opacity-80 flex items-center justify-between"
-                        style={{ background: 'transparent' }}
+                        style={{ background: 'var(--dds-color-bg-normal)' }}
                       >
                         <span>{m.name}</span>
                         <span className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>

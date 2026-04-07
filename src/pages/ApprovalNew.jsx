@@ -264,8 +264,8 @@ export default function ApprovalNew() {
               />
               {showDropdown && memberResults.length > 0 && (
                 <ul
-                  className="absolute z-50 w-full mt-1 rounded-lg shadow-lg overflow-y-auto max-h-48 border bg-white"
-                  style={{ borderColor: 'var(--dds-color-border-normal)' }}
+                  className="absolute z-50 w-full mt-1 rounded-lg shadow-lg overflow-y-auto max-h-48 border"
+                  style={{ background: 'var(--dds-color-background-surface)', borderColor: 'var(--dds-color-border-normal)' }}
                 >
                   {memberResults.map((m) => (
                     <li key={m.id}>
@@ -273,7 +273,7 @@ export default function ApprovalNew() {
                         type="button"
                         onClick={() => selectApprover(m)}
                         className="w-full text-left px-3 py-2 text-sm hover:opacity-80 flex items-center justify-between"
-                        style={{ background: 'var(--dds-color-bg-normal)' }}
+                        style={{ background: 'var(--dds-color-background-surface)' }}
                       >
                         <span>{m.name}</span>
                         <span className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>
@@ -287,7 +287,7 @@ export default function ApprovalNew() {
               {showDropdown && memberResults.length === 0 && memberQuery.trim() && (
                 <div
                   className="absolute z-10 w-full mt-1 rounded-lg shadow-lg p-3 text-sm border"
-                  style={{ background: 'var(--dds-color-bg-normal)', borderColor: 'var(--dds-color-border-normal)', color: 'var(--dds-color-text-secondary)' }}
+                  style={{ background: 'var(--dds-color-background-surface)', borderColor: 'var(--dds-color-border-normal)', color: 'var(--dds-color-text-secondary)' }}
                 >
                   검색 결과가 없습니다.
                 </div>

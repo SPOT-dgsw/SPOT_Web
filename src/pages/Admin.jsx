@@ -57,22 +57,16 @@ function WakeupQueue() {
   const { showToast } = useToast();
   const minScheduleDateInputValue = getWakeupScheduleMinDateInputValue();
 
-  const load = useCallback(
-    () => api.get('/api/admin/wakeup/queue').then(r => setSongs(r.data.songs)),
-    []
-  );
-  const loadToday = useCallback(
-    () => api.get('/api/songs/today').then(r => setTodaySongs(r.data.songs)),
-    []
-  );
-  const loadApproved = useCallback(
-    () => api.get('/api/songs/schedule').then(r => setApprovedSongs(r.data.songs)),
-    []
-  );
-  const refresh = useCallback(
-    () => Promise.all([load(), loadToday(), loadApproved()]),
-    [load, loadToday, loadApproved]
-  );
+  const refresh = useCallback(async () => {
+    const [queueRes, todayRes, scheduleRes] = await Promise.all([
+      api.get('/api/admin/wakeup/queue'),
+      api.get('/api/songs/today'),
+      api.get('/api/songs/schedule'),
+    ]);
+    setSongs(queueRes.data.songs);
+    setTodaySongs(todayRes.data.songs);
+    setApprovedSongs(scheduleRes.data.songs);
+  }, []);
 
   useEffect(() => {
     refresh();

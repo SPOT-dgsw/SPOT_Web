@@ -264,7 +264,7 @@ export default function ApprovalNew() {
               />
               {showDropdown && memberResults.length > 0 && (
                 <ul
-                  className="absolute z-10 w-full mt-1 rounded-lg shadow-lg overflow-y-auto max-h-48 border"
+                  className="absolute z-50 w-full mt-1 rounded-lg shadow-lg overflow-y-auto max-h-48 border"
                   style={{ background: 'var(--dds-color-bg-normal)', borderColor: 'var(--dds-color-border-normal)' }}
                 >
                   {memberResults.map((m) => (

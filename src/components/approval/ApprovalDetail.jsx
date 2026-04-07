@@ -107,7 +107,7 @@ export default function ApprovalDetail({ approval, onClose }) {
     >
       <div
         className="w-full max-w-lg rounded-2xl shadow-xl overflow-y-auto max-h-[90vh]"
-        style={{ background: 'var(--dds-color-bg-normal)' }}
+        style={{ background: 'var(--dds-color-background-surface)' }}
       >
         {/* 헤더 */}
         <div className="flex items-start justify-between gap-3 p-5 border-b" style={{ borderColor: 'var(--dds-color-border-normal)' }}>

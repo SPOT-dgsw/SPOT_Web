@@ -445,7 +445,7 @@ function UserManagement() {
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && search()}
-          placeholder="이메일 또는 이름으로 검색..."
+          placeholder="도담ID 또는 이름으로 검색..."
           className="cu-input flex-1"
         />
         <button
@@ -461,7 +461,7 @@ function UserManagement() {
             <thead>
               <tr>
                 <th>이름</th>
-                <th>이메일</th>
+                <th>도담 ID</th>
                 <th>역할</th>
                 <th>상태</th>
                 <th className="text-right">작업</th>
@@ -471,7 +471,7 @@ function UserManagement() {
               {users.map(u => (
                 <tr key={u.id}>
                   <td>{u.name}</td>
-                  <td style={{ color: 'var(--dds-color-text-secondary)' }}>{u.dodam_id}</td>
+                  <td style={{ color: 'var(--dds-color-text-secondary)' }}>{u.username}</td>
                   <td>
                     <select
                       value={u.role}
@@ -575,7 +575,7 @@ function AuditLogs() {
           value={queryInput}
           onChange={e => setQueryInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSearch()}
-          placeholder="이름/이메일/경로/메서드 검색..."
+          placeholder="이름/도담ID/경로/메서드 검색..."
           className="cu-input flex-1"
         />
         <button

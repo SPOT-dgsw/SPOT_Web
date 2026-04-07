@@ -103,7 +103,7 @@ export default function MyPage() {
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <span className="text-sm sm:w-20" style={{ color: 'var(--dds-color-text-secondary)' }}>도담 ID</span>
-            <span className="text-sm font-medium break-all">{user?.dodam_id}</span>
+            <span className="text-sm font-medium break-all">{user?.username}</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <span className="text-sm sm:w-20" style={{ color: 'var(--dds-color-text-secondary)' }}>역할</span>

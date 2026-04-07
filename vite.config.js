@@ -72,6 +72,17 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    chunkSizeWarningLimit: 1100,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'md-editor': ['@uiw/react-md-editor'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/auth': 'http://localhost:4000',

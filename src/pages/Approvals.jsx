@@ -49,8 +49,10 @@ function ApprovalManagement() {
     try {
       const res = await api.get('/api/approval/admin/pending', { params: { pageSize: 50 } });
       setPendingApprovals(res.data.approvals || []);
-    } catch { /* silent */ }
-  }, []);
+    } catch {
+      showToast('결재 대기 목록을 불러오지 못했습니다.', 'error');
+    }
+  }, [showToast]);
 
   const loadHistory = useCallback(async () => {
     try {
@@ -61,8 +63,10 @@ function ApprovalManagement() {
       const res = await api.get('/api/approval/admin/history', { params });
       setHistoryApprovals(res.data.approvals || []);
       setHistoryPagination(res.data.pagination || { total: 0, page: 1, totalPages: 1 });
-    } catch { /* silent */ }
-  }, [historyPage, historyQuery, historyStatus, historyTemplate]);
+    } catch {
+      showToast('결재 이력을 불러오지 못했습니다.', 'error');
+    }
+  }, [historyPage, historyQuery, historyStatus, historyTemplate, showToast]);
 
   useEffect(() => { loadPending(); }, [loadPending]);
   useEffect(() => { loadHistory(); }, [loadHistory]);
@@ -165,6 +169,11 @@ function ApprovalManagement() {
                       <p className="text-sm mt-0.5" style={{ color: 'var(--dds-color-text-secondary)' }}>
                         {approval.user?.name} · {new Date(approval.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
                       </p>
+                      {approval.approver && (
+                        <p className="text-xs mt-0.5" style={{ color: 'var(--dds-color-brand-primary)' }}>
+                          지정 결재자: {approval.approver.name}
+                        </p>
+                      )}
                       {approval.attachments?.length > 0 && (
                         <p className="text-xs mt-0.5" style={{ color: 'var(--dds-color-text-secondary)' }}>
                           첨부 파일 {approval.attachments.length}개
@@ -328,9 +337,10 @@ export default function Approvals() {
   useEffect(() => {
     if (isMember) {
       api.get('/api/approval/my', { params: { pageSize: 50 } })
-        .then(r => setApprovals(r.data.approvals || []));
+        .then(r => setApprovals(r.data.approvals || []))
+        .catch(() => showToast('내 결재 문서를 불러오지 못했습니다.', 'error'));
     }
-  }, [isMember]);
+  }, [isMember, showToast]);
 
   const filteredApprovals = useMemo(() => {
     if (approvalFilter === 'all') return approvals;

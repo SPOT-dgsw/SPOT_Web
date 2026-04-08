@@ -61,8 +61,11 @@ export default function Home() {
         setIsTomorrowDisplay(Boolean(todayRes.data.is_tomorrow));
         setSchedule(scheduleRes.data.songs);
       })
+      .catch(() => {
+        showToast('기상송 정보를 불러오지 못했습니다.', 'error');
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [showToast]);
 
   useEffect(() => {
     return () => {

@@ -41,8 +41,10 @@ export default function MyPage() {
   const [cancellingSongId, setCancellingSongId] = useState(null);
 
   useEffect(() => {
-    api.get('/api/songs/my').then(r => setSongs(r.data.songs));
-  }, []);
+    api.get('/api/songs/my')
+      .then(r => setSongs(r.data.songs))
+      .catch(() => showToast('신청 기록을 불러오지 못했습니다.', 'error'));
+  }, [showToast]);
 
   const filteredSongs = useMemo(() => {
     if (filter === 'all') return songs;

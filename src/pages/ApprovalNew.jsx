@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MDEditor from '@uiw/react-md-editor';
 import api from '../api/client';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 
 const TEMPLATES = [
   { value: 'EQUIPMENT', label: '장비 대여 신청' },
@@ -66,11 +67,12 @@ const MARKDOWN_TEMPLATES = {
 };
 
 const MAX_CONTENT_LENGTH = 10000;
-const ROLE_LABELS = { LEADER: '부장', MEMBER: '부원' };
+const ROLE_LABELS = { LEADER: '부장' };
 
 export default function ApprovalNew() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { dark } = useTheme();
   const fileInputRef = useRef(null);
 
   const [template, setTemplate] = useState('');
@@ -295,13 +297,13 @@ export default function ApprovalNew() {
             </div>
           )}
           <p className="mt-1 text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>
-            방송부 구성원 중 결재자를 지정할 수 있습니다.
+            방송부장(LEADER)만 결재자로 지정할 수 있습니다.
           </p>
         </div>
 
         {/* 마크다운 에디터 */}
         {template && (
-          <div data-color-mode="light">
+          <div data-color-mode={dark ? 'dark' : 'light'}>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-sm font-medium">
                 내용 <span style={{ color: 'var(--dds-color-status-error)' }}>*</span>

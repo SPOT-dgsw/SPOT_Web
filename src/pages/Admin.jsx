@@ -229,15 +229,21 @@ function RadioManagement() {
   const { showToast } = useToast();
 
   const loadApps = useCallback(
-    () => api.get('/api/admin/radio/applications').then(r => setApplications(r.data.songs)),
-    []
+    () => api.get('/api/admin/radio/applications')
+      .then(r => setApplications(r.data.songs))
+      .catch(() => showToast('점심방송 신청 목록을 불러오지 못했습니다.', 'error')),
+    [showToast]
   );
   const loadPlaylist = useCallback(
-    () => api.get('/api/admin/radio/playlist').then(r => setPlaylist(r.data.songs)),
-    []
+    () => api.get('/api/admin/radio/playlist')
+      .then(r => setPlaylist(r.data.songs))
+      .catch(() => showToast('오늘의 방송 목록을 불러오지 못했습니다.', 'error')),
+    [showToast]
   );
   const loadYt = useCallback(
-    () => api.get('/api/admin/youtube/status').then(r => setYtStatus(r.data.connected)),
+    () => api.get('/api/admin/youtube/status')
+      .then(r => setYtStatus(r.data.connected))
+      .catch(() => { /* YouTube 상태 확인 실패는 무시 */ }),
     []
   );
   const refreshRadioData = useCallback(
@@ -605,7 +611,7 @@ function AuditLogs() {
                   </td>
                   <td>
                     <div className="font-medium">{log.user_name || '-'}</div>
-                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.user_email || '-'}</div>
+                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.user_email || '(도담ID 없음)'}</div>
                   </td>
                   <td>{log.user_role || '-'}</td>
                   <td>

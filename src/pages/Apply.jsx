@@ -73,6 +73,8 @@ export default function Apply() {
       /youtu\.be\//,
       /youtube\.com\/embed\//,
       /youtube\.com\/shorts\//,
+      /youtube\.com\/live\//,
+      /youtube-nocookie\.com\/embed\//,
     ];
     return patterns.some(pattern => pattern.test(text));
   };
@@ -130,7 +132,7 @@ export default function Apply() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)[a-zA-Z0-9_-]{11}/;
+    const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/live\/|youtube-nocookie\.com\/embed\/)[a-zA-Z0-9_-]{11}/;
     if (!youtubeUrlRegex.test(input)) {
       const errorMessage = '유효한 YouTube URL을 입력해주세요.';
       setError(errorMessage);

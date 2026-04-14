@@ -29,7 +29,7 @@ export default function Navbar() {
           )}
           {isAdmin && !isBlocked && (
             <>
-              <NavLink to="/approvals" className={navClassName}>전자결재</NavLink>
+              {/* <NavLink to="/approvals" className={navClassName}>전자결재</NavLink> */}
               <NavLink to="/admin" className={navClassName}>관리</NavLink>
             </>
           )}

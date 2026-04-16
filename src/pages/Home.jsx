@@ -42,6 +42,16 @@ export default function Home() {
   const downloadPollRef = useRef(null);
   const downloadTimeoutRef = useRef(null);
 
+  const marqueeContainerRef = useRef(null);
+  const marqueeContentRef = useRef(null);
+  const [shouldMarquee, setShouldMarquee] = useState(false);
+
+  useEffect(() => {
+    if (announcement && marqueeContainerRef.current && marqueeContentRef.current) {
+      setShouldMarquee(marqueeContentRef.current.scrollWidth > marqueeContainerRef.current.clientWidth);
+    }
+  }, [announcement, loading]);
+
   const isAdmin = user && (user.role === 'MEMBER' || user.role === 'LEADER');
 
   useEffect(() => {
@@ -153,13 +163,18 @@ export default function Home() {
     <div className="cu-page space-y-6 sm:space-y-7">
       {announcement && (
         <section
-          className="p-3 sm:p-4 rounded-xl border marquee-container text-center"
+          ref={marqueeContainerRef}
+          className={`p-3 sm:p-4 rounded-xl border text-center ${shouldMarquee ? 'marquee-container' : 'overflow-hidden whitespace-nowrap w-full'}`}
           style={{
             borderColor: 'color-mix(in srgb, var(--dds-color-status-error) 35%, var(--dds-color-border-normal))',
             background: 'color-mix(in srgb, var(--dds-color-status-error) 8%, var(--dds-color-background-surface))',
           }}
         >
-          <p className="text-sm font-medium marquee-content" style={{ color: 'var(--dds-color-status-error)' }}>
+          <p
+            ref={marqueeContentRef}
+            className={`text-sm font-medium ${shouldMarquee ? 'marquee-content' : 'inline-block'}`}
+            style={{ color: 'var(--dds-color-status-error)' }}
+          >
             {announcement}
           </p>
         </section>

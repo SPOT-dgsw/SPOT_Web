@@ -153,13 +153,13 @@ export default function Home() {
     <div className="cu-page space-y-6 sm:space-y-7">
       {announcement && (
         <section
-          className="p-3 sm:p-4 rounded-xl border text-center"
+          className="p-3 sm:p-4 rounded-xl border marquee-container text-center"
           style={{
             borderColor: 'color-mix(in srgb, var(--dds-color-status-error) 35%, var(--dds-color-border-normal))',
             background: 'color-mix(in srgb, var(--dds-color-status-error) 8%, var(--dds-color-background-surface))',
           }}
         >
-          <p className="text-sm font-medium whitespace-pre-line" style={{ color: 'var(--dds-color-status-error)' }}>
+          <p className="text-sm font-medium marquee-content" style={{ color: 'var(--dds-color-status-error)' }}>
             {announcement}
           </p>
         </section>

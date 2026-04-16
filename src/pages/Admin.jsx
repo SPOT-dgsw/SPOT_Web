@@ -20,6 +20,23 @@ const kstDateTimeFormatter = new Intl.DateTimeFormat('en-CA', {
   hour12: false,
 });
 
+// 감사 로그 테이블 렌더 시 행마다 호출되므로 DateTimeFormat을 모듈 스코프에서 1회만 생성
+const AUDIT_LOG_FORMATTER = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
+function formatAuditLogTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return AUDIT_LOG_FORMATTER.format(date);
+}
+
 function toKstDateInputValue(dateValue) {
   const date = new Date(dateValue);
   if (Number.isNaN(date.getTime())) return '';
@@ -445,7 +462,7 @@ function UserManagement() {
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && search()}
-          placeholder="도담ID 또는 이름으로 검색..."
+          placeholder="도담ID, 이름 또는 역할(LEADER/MEMBER/USER)로 검색..."
           className="cu-input flex-1"
         />
         <button
@@ -607,7 +624,7 @@ function AuditLogs() {
               {logs.map((log) => (
                 <tr key={log.id}>
                   <td className="text-xs whitespace-nowrap" style={{ color: 'var(--dds-color-text-secondary)' }}>
-                    {new Date(log.created_at).toLocaleString('ko-KR')}
+                    {formatAuditLogTime(log.created_at)}
                   </td>
                   <td>
                     <div className="font-medium">{log.user_name || '-'}</div>
@@ -721,6 +738,7 @@ function ApplyNoticeSettings() {
     wakeupPrimary: '',
     radioPrimary: '',
     common: '',
+    homeAnnouncement: '',
   });
 
   useEffect(() => {
@@ -730,10 +748,11 @@ function ApplyNoticeSettings() {
           wakeupPrimary: res.data?.notice?.wakeupPrimary || '',
           radioPrimary: res.data?.notice?.radioPrimary || '',
           common: res.data?.notice?.common || '',
+          homeAnnouncement: res.data?.notice?.homeAnnouncement || '',
         });
       })
       .catch((err) => {
-        showToast(err.response?.data?.error || '신청 안내사항을 불러오는데 실패했습니다.', 'error');
+        showToast(err.response?.data?.error || '공지사항을 불러오는데 실패했습니다.', 'error');
       })
       .finally(() => {
         setLoading(false);
@@ -758,13 +777,33 @@ function ApplyNoticeSettings() {
   };
 
   if (loading) {
-    return <p className="cu-empty">안내사항을 불러오는 중...</p>;
+    return <p className="cu-empty">공지사항을 불러오는 중...</p>;
   }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">노래신청 안내사항 관리</h3>
+      <h3 className="text-lg font-semibold">공지사항 관리</h3>
+
       <div className="cu-card space-y-4">
+        <h4 className="text-sm font-semibold" style={{ color: 'var(--dds-color-text-secondary)' }}>메인 화면 공지사항</h4>
+        <div>
+          <label className="block text-sm font-medium mb-1">메인 공지 문구</label>
+          <textarea
+            value={notice.homeAnnouncement}
+            onChange={(e) => handleChange('homeAnnouncement', e.target.value)}
+            placeholder="비워두면 메인 화면에 공지사항이 표시되지 않습니다."
+            maxLength={500}
+            rows={3}
+            className="cu-input resize-y min-h-20"
+          />
+          <p className="text-xs mt-1" style={{ color: 'var(--dds-color-text-secondary)' }}>
+            {notice.homeAnnouncement.length}/500자
+          </p>
+        </div>
+      </div>
+
+      <div className="cu-card space-y-4">
+        <h4 className="text-sm font-semibold" style={{ color: 'var(--dds-color-text-secondary)' }}>노래신청 안내사항</h4>
         <div>
           <label className="block text-sm font-medium mb-1">기상송 안내 문구</label>
           <textarea
@@ -795,15 +834,16 @@ function ApplyNoticeSettings() {
             className="cu-input resize-y min-h-20"
           />
         </div>
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="cu-btn cu-btn-primary w-full sm:w-auto"
-          >
-            {saving ? '저장 중...' : '안내사항 저장'}
-          </button>
-        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="cu-btn cu-btn-primary w-full sm:w-auto"
+        >
+          {saving ? '저장 중...' : '공지사항 저장'}
+        </button>
       </div>
     </div>
   );
@@ -820,7 +860,7 @@ export default function Admin() {
     { id: 'radio', label: '점심방송' },
     { id: 'users', label: '사용자 관리' },
     { id: 'youtube', label: 'YouTube' },
-    { id: 'applyNotice', label: '신청 안내' },
+    { id: 'applyNotice', label: '공지사항' },
     { id: 'audit', label: '감사' },
   ];
 

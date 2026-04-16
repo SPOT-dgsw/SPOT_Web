@@ -54,13 +54,14 @@ export default defineConfig({
               url.origin === self.location.origin && (
                 url.pathname === '/api/songs/today' ||
                 url.pathname === '/api/songs/schedule' ||
-                url.pathname === '/api/songs/daily'
+                url.pathname === '/api/songs/daily' ||
+                url.pathname === '/api/songs/announcement'
               ),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-public-cache',
               expiration: {
-                maxEntries: 5,
+                maxEntries: 6,
                 maxAgeSeconds: 60
               },
               cacheableResponse: {
@@ -78,7 +79,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'md-editor': ['@uiw/react-md-editor'],
         },
       },
     },

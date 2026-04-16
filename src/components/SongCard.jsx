@@ -1,9 +1,20 @@
-export default function SongCard({ song, showUser, actions, showDate = true }) {
+import { memo } from 'react';
+
+// DateTimeFormat은 매 호출마다 객체 생성 비용이 있으므로 모듈 스코프에서 1회 생성
+const PLAY_DATE_FORMATTER = new Intl.DateTimeFormat('ko-KR', {
+  month: 'long',
+  day: 'numeric',
+  weekday: 'short',
+});
+
+function SongCard({ song, showUser, actions, showDate = true }) {
   return (
     <div className="cu-card flex flex-col sm:flex-row gap-3 sm:gap-4">
       <img
         src={`https://img.youtube.com/vi/${song.video_id}/mqdefault.jpg`}
         alt={song.title}
+        loading="lazy"
+        decoding="async"
         className="w-full h-28 sm:w-32 sm:h-20 rounded-lg object-cover flex-shrink-0 border"
         style={{ borderColor: 'var(--dds-color-border-normal)' }}
       />
@@ -22,7 +33,7 @@ export default function SongCard({ song, showUser, actions, showDate = true }) {
         )}
         {showDate && song.play_date && (
           <p className="text-xs mt-1" style={{ color: 'var(--dds-color-text-secondary)' }}>
-            {new Date(song.play_date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
+            {PLAY_DATE_FORMATTER.format(new Date(song.play_date))}
           </p>
         )}
       </div>
@@ -34,3 +45,5 @@ export default function SongCard({ song, showUser, actions, showDate = true }) {
     </div>
   );
 }
+
+export default memo(SongCard);

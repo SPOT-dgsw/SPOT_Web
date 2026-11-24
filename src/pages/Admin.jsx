@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import api from '../api/client';
+import api, { errorMessage } from '../api/client';
 import SongCard from '../components/SongCard';
 
 const kstDateInputFormatter = new Intl.DateTimeFormat('en-CA', {
@@ -76,13 +76,13 @@ function WakeupQueue() {
 
   const refresh = useCallback(async () => {
     const [queueRes, todayRes, scheduleRes] = await Promise.all([
-      api.get('/api/admin/wakeup/queue'),
+      api.get('/api/songs/wakeup/queue'),
       api.get('/api/songs/today'),
       api.get('/api/songs/schedule'),
     ]);
-    setSongs(queueRes.data.songs);
-    setTodaySongs(todayRes.data.songs);
-    setApprovedSongs(scheduleRes.data.songs);
+    setSongs(queueRes.data.items);
+    setTodaySongs(todayRes.data.items);
+    setApprovedSongs(scheduleRes.data.items);
   }, []);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function WakeupQueue() {
       showToast('기상송이 삭제되었습니다.', 'success');
       await refresh();
     } catch (err) {
-      showToast(err.response?.data?.error || '삭제에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '삭제에 실패했습니다.'), 'error');
     } finally {
       setDeleting(null);
     }
@@ -121,7 +121,7 @@ function WakeupQueue() {
       });
       await refresh();
     } catch (err) {
-      showToast(err.response?.data?.error || '스케줄 변경에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '스케줄 변경에 실패했습니다.'), 'error');
     } finally {
       setScheduling(null);
     }
@@ -132,11 +132,11 @@ function WakeupQueue() {
 
     setUnapproving(id);
     try {
-      await api.patch(`/api/admin/wakeup/${id}/unapprove`);
+      await api.patch(`/api/admin/songs/${id}/status`, { status: 'PENDING' });
       showToast('기상송 승인이 취소되었습니다.', 'success');
       await refresh();
     } catch (err) {
-      showToast(err.response?.data?.error || '승인 취소에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '승인 취소에 실패했습니다.'), 'error');
     } finally {
       setUnapproving(null);
     }
@@ -247,13 +247,13 @@ function RadioManagement() {
 
   const loadApps = useCallback(
     () => api.get('/api/admin/radio/applications')
-      .then(r => setApplications(r.data.songs))
+      .then(r => setApplications(r.data.items))
       .catch(() => showToast('점심방송 신청 목록을 불러오지 못했습니다.', 'error')),
     [showToast]
   );
   const loadPlaylist = useCallback(
     () => api.get('/api/admin/radio/playlist')
-      .then(r => setPlaylist(r.data.songs))
+      .then(r => setPlaylist(r.data.items))
       .catch(() => showToast('오늘의 방송 목록을 불러오지 못했습니다.', 'error')),
     [showToast]
   );
@@ -275,11 +275,11 @@ function RadioManagement() {
   const approve = async (id) => {
     setProcessing({ id, action: 'approve' });
     try {
-      await api.patch(`/api/admin/radio/${id}/approve`);
+      await api.patch(`/api/admin/songs/${id}/status`, { status: 'APPROVED' });
       showToast('신청이 승인되었습니다.', 'success');
       await refreshRadioData();
     } catch (err) {
-      showToast(err.response?.data?.error || '승인에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '승인에 실패했습니다.'), 'error');
     } finally {
       setProcessing(null);
     }
@@ -288,11 +288,11 @@ function RadioManagement() {
   const reject = async (id) => {
     setProcessing({ id, action: 'reject' });
     try {
-      await api.patch(`/api/admin/radio/${id}/reject`);
+      await api.patch(`/api/admin/songs/${id}/status`, { status: 'REJECTED' });
       showToast('신청이 거절되었습니다.', 'info');
       await refreshRadioData();
     } catch (err) {
-      showToast(err.response?.data?.error || '거절에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '거절에 실패했습니다.'), 'error');
     } finally {
       setProcessing(null);
     }
@@ -304,8 +304,8 @@ function RadioManagement() {
 
     setBulkApproving(true);
     try {
-      const res = await api.patch('/api/admin/radio/approve-all');
-      const count = res.data?.updatedCount ?? 0;
+      const res = await api.post('/api/admin/radio/approve-all');
+      const count = res.data?.updated_count ?? 0;
       if (count > 0) {
         showToast(`${count}개 신청이 일괄 승인되었습니다.`, 'success');
       } else {
@@ -313,7 +313,7 @@ function RadioManagement() {
       }
       await refreshRadioData();
     } catch (err) {
-      showToast(err.response?.data?.error || '일괄 승인에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '일괄 승인에 실패했습니다.'), 'error');
     } finally {
       setBulkApproving(false);
     }
@@ -324,12 +324,12 @@ function RadioManagement() {
     setExporting(true);
     try {
       const res = await api.post('/api/admin/youtube/export', {
-        songIds: playlist.map(s => s.id),
+        song_ids: playlist.map(s => s.id),
       });
       showToast('YouTube 재생목록이 생성되었습니다!', 'success');
       window.open(res.data.url, '_blank');
     } catch (err) {
-      showToast(err.response?.data?.error || '재생목록 생성에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '재생목록 생성에 실패했습니다.'), 'error');
     } finally {
       setExporting(false);
     }
@@ -420,21 +420,21 @@ function UserManagement() {
   const search = async () => {
     if (!query.trim()) return;
     const res = await api.get(`/api/admin/users?q=${encodeURIComponent(query)}`);
-    setUsers(res.data.users);
+    setUsers(res.data.items);
   };
 
   const toggleBlacklist = async (id) => {
     setUpdating(id);
     try {
-      await api.patch(`/api/admin/users/${id}/blacklist`);
       const user = users.find(u => u.id === id);
+      await api.patch(`/api/admin/users/${id}`, { is_blacklisted: !user?.is_blacklisted });
       showToast(
         user?.is_blacklisted ? '차단이 해제되었습니다.' : '사용자가 차단되었습니다.',
         user?.is_blacklisted ? 'success' : 'warning'
       );
       search();
     } catch (err) {
-      showToast(err.response?.data?.error || '처리에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '처리에 실패했습니다.'), 'error');
     } finally {
       setUpdating(null);
     }
@@ -443,11 +443,11 @@ function UserManagement() {
   const updateRole = async (id, role) => {
     setUpdating(id);
     try {
-      await api.patch(`/api/admin/users/${id}/role`, { role });
+      await api.patch(`/api/admin/users/${id}`, { role });
       showToast('역할이 변경되었습니다.', 'success');
       search();
     } catch (err) {
-      showToast(err.response?.data?.error || '역할 변경에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '역할 변경에 실패했습니다.'), 'error');
     } finally {
       setUpdating(null);
     }
@@ -546,20 +546,20 @@ function AuditLogs() {
         const res = await api.get('/api/admin/audit/logs', {
           params: {
             page,
-            pageSize: 30,
+            page_size: 30,
             q: query || undefined,
           },
         });
 
-        setLogs(res.data.logs || []);
-        setPagination(res.data.pagination || {
-          total: 0,
-          page: 1,
-          pageSize: 30,
-          totalPages: 1,
+        setLogs(res.data.items || []);
+        setPagination({
+          total: res.data.total,
+          page: res.data.page,
+          pageSize: res.data.page_size,
+          totalPages: Math.max(1, Math.ceil(res.data.total / res.data.page_size)),
         });
       } catch (err) {
-        showToast(err.response?.data?.error || '감사 로그를 불러오는데 실패했습니다.', 'error');
+        showToast(errorMessage(err, '감사 로그를 불러오는데 실패했습니다.'), 'error');
       } finally {
         setLoading(false);
       }
@@ -628,7 +628,7 @@ function AuditLogs() {
                   </td>
                   <td>
                     <div className="font-medium">{log.user_name || '-'}</div>
-                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.user_email || '(도담ID 없음)'}</div>
+                    <div className="text-xs" style={{ color: 'var(--dds-color-text-secondary)' }}>{log.user_username || '(도담ID 없음)'}</div>
                   </td>
                   <td>{log.user_role || '-'}</td>
                   <td>
@@ -742,17 +742,17 @@ function ApplyNoticeSettings() {
   });
 
   useEffect(() => {
-    api.get('/api/admin/settings/apply-notice')
+    api.get('/api/notice')
       .then((res) => {
         setNotice({
-          wakeupPrimary: res.data?.notice?.wakeupPrimary || '',
-          radioPrimary: res.data?.notice?.radioPrimary || '',
-          common: res.data?.notice?.common || '',
-          homeAnnouncement: res.data?.notice?.homeAnnouncement || '',
+          wakeupPrimary: res.data?.wakeup_primary || '',
+          radioPrimary: res.data?.radio_primary || '',
+          common: res.data?.common || '',
+          homeAnnouncement: res.data?.home_announcement || '',
         });
       })
       .catch((err) => {
-        showToast(err.response?.data?.error || '공지사항을 불러오는데 실패했습니다.', 'error');
+        showToast(errorMessage(err, '공지사항을 불러오는데 실패했습니다.'), 'error');
       })
       .finally(() => {
         setLoading(false);
@@ -766,11 +766,21 @@ function ApplyNoticeSettings() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await api.patch('/api/admin/settings/apply-notice', notice);
-      setNotice(res.data.notice);
-      showToast(res.data.message || '저장되었습니다.', 'success');
+      const res = await api.patch('/api/notice', {
+        wakeup_primary: notice.wakeupPrimary,
+        radio_primary: notice.radioPrimary,
+        common: notice.common,
+        home_announcement: notice.homeAnnouncement,
+      });
+      setNotice({
+        wakeupPrimary: res.data.wakeup_primary,
+        radioPrimary: res.data.radio_primary,
+        common: res.data.common,
+        homeAnnouncement: res.data.home_announcement,
+      });
+      showToast('공지사항이 저장되었습니다.', 'success');
     } catch (err) {
-      showToast(err.response?.data?.error || '저장에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '저장에 실패했습니다.'), 'error');
     } finally {
       setSaving(false);
     }

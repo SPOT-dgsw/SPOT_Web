@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import api from '../api/client';
+import api, { errorMessage } from '../api/client';
 import SongCard from '../components/SongCard';
 
 const WAKEUP_QUEUE_MANAGER_ROLES = new Set(['MEMBER', 'LEADER']);
@@ -40,7 +40,7 @@ export default function Apply() {
     setQueueLoading(true);
     try {
       const res = await api.get('/api/songs/wakeup/queue');
-      setWakeupQueue(res.data.songs);
+      setWakeupQueue(res.data.items);
     } catch {
       setWakeupQueue([]);
     } finally {
@@ -50,13 +50,13 @@ export default function Apply() {
 
   useEffect(() => {
     loadWakeupQueue();
-    api.get('/api/songs/apply-notice')
+    api.get('/api/notice')
       .then((res) => {
-        if (!res.data?.notice) return;
+        if (!res.data) return;
         setApplyNotice({
-          wakeupPrimary: res.data.notice.wakeupPrimary || DEFAULT_APPLY_NOTICE.wakeupPrimary,
-          radioPrimary: res.data.notice.radioPrimary || DEFAULT_APPLY_NOTICE.radioPrimary,
-          common: res.data.notice.common || DEFAULT_APPLY_NOTICE.common,
+          wakeupPrimary: res.data.wakeup_primary || DEFAULT_APPLY_NOTICE.wakeupPrimary,
+          radioPrimary: res.data.radio_primary || DEFAULT_APPLY_NOTICE.radioPrimary,
+          common: res.data.common || DEFAULT_APPLY_NOTICE.common,
         });
       })
       .catch(() => {
@@ -109,7 +109,7 @@ export default function Apply() {
     try {
       const res = await api.get(`/api/songs/search?q=${encodeURIComponent(queryText)}`);
       if (requestSeq !== searchRequestSeqRef.current) return;
-      setSearchResults(res.data.results);
+      setSearchResults(res.data.items);
     } catch {
       if (requestSeq !== searchRequestSeqRef.current) return;
       setSearchResults([]);
@@ -161,7 +161,7 @@ export default function Apply() {
       setSearchResults([]);
       setSearching(false);
     } catch (err) {
-      showToast(err.response?.data?.error || '오류가 발생했습니다.', 'error');
+      showToast(errorMessage(err, '오류가 발생했습니다.'), 'error');
     } finally {
       setLoading(false);
     }
@@ -177,7 +177,7 @@ export default function Apply() {
       showToast('기상송이 삭제되었습니다.', 'success');
       await loadWakeupQueue();
     } catch (err) {
-      showToast(err.response?.data?.error || '기상송 삭제에 실패했습니다.', 'error');
+      showToast(errorMessage(err, '기상송 삭제에 실패했습니다.'), 'error');
     } finally {
       setDeletingQueueSongId(null);
     }

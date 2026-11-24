@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import api from '../api/client';
+import api, { onAuthChange, refreshSession, setAccessToken } from '../api/client';
 
 const AuthContext = createContext(null);
 const AUTH_POLL_INTERVAL_MS = 60000;
@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const lastFetchTsRef = useRef(0);
 
+  // 차단·역할 변경을 반영하려고 주기적으로 /auth/me를 다시 읽어요 (만료되면 client가 refresh)
   const fetchUser = useCallback(() => {
     lastFetchTsRef.current = Date.now();
     api.get('/auth/me')
@@ -20,7 +21,14 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    fetchUser();
+    const unsubscribe = onAuthChange(setUser);
+
+    // 새로고침·로그인 직후: refresh 쿠키로 access token을 받아요. 쿠키가 없으면 비로그인
+    lastFetchTsRef.current = Date.now();
+    refreshSession()
+      .then(data => setUser(data.user))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
 
     const fetchIfStale = () => {
       if (document.visibilityState !== 'visible') return;
@@ -28,13 +36,12 @@ export function AuthProvider({ children }) {
       fetchUser();
     };
 
-    // 주기적 세션 갱신 + 포커스/가시성 복귀 시 즉시 갱신 (쓰로틀링으로 중복 호출 방지)
     const interval = setInterval(fetchIfStale, AUTH_POLL_INTERVAL_MS);
-
     document.addEventListener('visibilitychange', fetchIfStale);
     window.addEventListener('focus', fetchIfStale);
 
     return () => {
+      unsubscribe();
       clearInterval(interval);
       document.removeEventListener('visibilitychange', fetchIfStale);
       window.removeEventListener('focus', fetchIfStale);
@@ -42,8 +49,12 @@ export function AuthProvider({ children }) {
   }, [fetchUser]);
 
   const logout = async () => {
-    await api.post('/auth/logout');
-    setUser(null);
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      setAccessToken(null);
+      setUser(null);
+    }
   };
 
   return (

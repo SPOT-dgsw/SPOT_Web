@@ -55,7 +55,7 @@ export default defineConfig({
                 url.pathname === '/api/songs/today' ||
                 url.pathname === '/api/songs/schedule' ||
                 url.pathname === '/api/songs/daily' ||
-                url.pathname === '/api/songs/announcement'
+                url.pathname === '/api/notice'
               ),
             handler: 'NetworkFirst',
             options: {
